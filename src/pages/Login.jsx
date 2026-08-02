@@ -9,6 +9,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [cooldownUntil, setCooldownUntil] = useState(0);
 
   function getFriendlyAuthError(message) {
     if (!message) return "Something went wrong. Please try again.";
@@ -26,10 +27,22 @@ export default function Login() {
     return `${window.location.origin.replace(/\/$/, "")}/login`;
   }
 
+  function isOnCooldown() {
+    return Date.now() < cooldownUntil;
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setInfo("");
+
+    if (isOnCooldown()) {
+      setError(
+        "Too many sign-up attempts. Please wait a few minutes and try again.",
+      );
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -42,6 +55,9 @@ export default function Login() {
 
       if (error) {
         setError(getFriendlyAuthError(error.message));
+        if (error.message?.toLowerCase().includes("rate limit")) {
+          setCooldownUntil(Date.now() + 5 * 60 * 1000);
+        }
       } else if (mode === "signup") {
         setInfo("Check your email to confirm your account.");
       }
@@ -78,12 +94,18 @@ export default function Login() {
         {error && <p className="error">{error}</p>}
         {info && <p className="info">{info}</p>}
 
-        <button type="submit" className="btn-primary" disabled={submitting}>
+        <button
+          type="submit"
+          className="btn-primary"
+          disabled={submitting || isOnCooldown()}
+        >
           {submitting
             ? "Please wait..."
-            : mode === "signin"
-              ? "Sign In"
-              : "Sign Up"}
+            : isOnCooldown()
+              ? "Try again later"
+              : mode === "signin"
+                ? "Sign In"
+                : "Sign Up"}
         </button>
 
         <button
