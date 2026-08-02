@@ -8,9 +8,16 @@ const isLikelySupabaseKey = (value) =>
   /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/.test(value);
 
 if (!supabaseUrl || !supabaseAnonKey || !isLikelySupabaseKey(supabaseAnonKey)) {
-  throw new Error(
+  console.error(
     "Supabase is not configured correctly. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to the values from your Supabase project settings.",
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabaseConfigError =
+  !supabaseUrl || !supabaseAnonKey || !isLikelySupabaseKey(supabaseAnonKey)
+    ? "Supabase is not configured correctly. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel and rebuild the app."
+    : "";
+
+export const supabase = supabaseConfigError
+  ? null
+  : createClient(supabaseUrl, supabaseAnonKey);
