@@ -5,12 +5,14 @@ budget limits, recurring transactions, and reports — built with React
 (Vite) + Supabase.
 
 ## 1. Create a Supabase project
+
 1. Go to https://supabase.com, sign up, and click **New Project**.
 2. Pick a name/password/region and wait ~2 min for it to provision.
 3. In the project, go to **Project Settings -> API**. Copy the **Project URL**
    and the **anon public key**.
 
 ## 2. Set up the database
+
 1. In the Supabase dashboard, open **SQL Editor -> New query**.
 2. Paste the contents of `supabase/schema.sql` and click **Run**.
    This creates the tables (`accounts`, `categories`, `transactions`,
@@ -19,8 +21,13 @@ budget limits, recurring transactions, and reports — built with React
 3. Go to **Authentication -> Providers** and make sure **Email** is enabled
    (it is by default). For faster local testing you can turn off
    "Confirm email" under Authentication -> Settings.
+4. If you keep email confirmation on, set **Authentication -> URL Configuration**
+   so **Site URL** points to your deployed Vercel URL, and add both your
+   Vercel domain and `http://localhost:5173` to **Redirect URLs**. That keeps
+   confirmation links from sending production users back to localhost.
 
 ## 3. Configure the app
+
 1. Copy `.env.example` to `.env`.
 2. Fill in the two values from step 1:
    ```
@@ -29,14 +36,17 @@ budget limits, recurring transactions, and reports — built with React
    ```
 
 ## 4. Run it
+
 ```bash
 npm install
 npm run dev
 ```
+
 Open the printed local URL, sign up with an email/password, and start
 adding accounts.
 
 ## Project structure
+
 ```
 src/
   lib/supabaseClient.js   # Supabase client init
@@ -55,6 +65,7 @@ supabase/schema.sql        # tables + RLS policies
 ```
 
 ## How the pieces fit together
+
 - **Accounts** — cash/bank/e-wallet/credit card "buckets". Balance =
   starting balance + all transactions on that account.
 - **Categories** — created from the Budgets page, tagged expense or income.
@@ -70,6 +81,9 @@ supabase/schema.sql        # tables + RLS policies
   (bar), computed client-side from the transactions already loaded.
 
 ## Deploying
+
 Any static host works (Vercel, Netlify, Cloudflare Pages): run
 `npm run build` and deploy the `dist/` folder, setting the same two
 `VITE_SUPABASE_*` env vars in the host's dashboard.
+If you use Supabase email confirmations, also make sure the Supabase Auth
+Site URL and Redirect URLs match the deployed domain you want users to land on.
