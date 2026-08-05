@@ -91,6 +91,44 @@ h2 {
   display: flex;
   min-height: 100vh;
 }
+@media (max-width: 920px) {
+  .app-shell {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 0.75rem;
+  }
+  .sidebar nav {
+    flex-direction: row;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  .nav-link {
+    padding: 0.6rem 0.75rem;
+    white-space: nowrap;
+  }
+  .content {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  .sidebar-footer {
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.6rem;
+  }
+  .brand {
+    margin-bottom: 0.5rem;
+  }
+}
 .sidebar {
   width: 240px;
   background: linear-gradient(
