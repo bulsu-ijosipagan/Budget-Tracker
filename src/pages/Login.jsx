@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, sendPasswordReset } = useAuth();
   const [mode, setMode] = useState("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -66,6 +66,28 @@ export default function Login() {
     }
   }
 
+  async function handleForgotPassword() {
+    setError("");
+    setInfo("");
+
+    if (!email) {
+      setError("Enter your email address above, then click Forgot password.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const { error } = await sendPasswordReset(email);
+      if (error) {
+        setError(getFriendlyAuthError(error.message));
+      } else {
+        setInfo("Password reset email sent. Check your inbox.");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <div className="auth-page">
       <form className="auth-card" onSubmit={handleSubmit}>
@@ -107,6 +129,17 @@ export default function Login() {
                 ? "Sign In"
                 : "Sign Up"}
         </button>
+
+        {mode === "signin" && (
+          <button
+            type="button"
+            className="btn-link"
+            onClick={handleForgotPassword}
+            disabled={submitting}
+          >
+            Forgot password?
+          </button>
+        )}
 
         <button
           type="button"

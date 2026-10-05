@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Accounts from "./pages/Accounts";
 import Transactions from "./pages/Transactions";
@@ -25,6 +26,7 @@ function AppRoutes() {
         path="/login"
         element={user ? <Navigate to="/" replace /> : <Login />}
       />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route
         path="/"
         element={

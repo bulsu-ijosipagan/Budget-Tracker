@@ -14,9 +14,27 @@ const links = [
 ];
 
 export default function Layout() {
-  const { signOut, user } = useAuth();
+  const { signOut, user, sendPasswordReset } = useAuth();
   const [calculatorOpen, setCalculatorOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [resetMessage, setResetMessage] = useState("");
+  const [sendingReset, setSendingReset] = useState(false);
+
+  async function handleChangePassword() {
+    if (!user?.email || sendingReset) return;
+    setResetMessage("");
+    setSendingReset(true);
+    try {
+      const { error } = await sendPasswordReset(user.email);
+      setResetMessage(
+        error
+          ? `Error: ${error.message}`
+          : "Password reset email sent. Check your inbox.",
+      );
+    } finally {
+      setSendingReset(false);
+    }
+  }
 
   return (
     <div className="app-shell">
@@ -38,6 +56,16 @@ export default function Layout() {
         </nav>
         <div className="sidebar-footer">
           <span className="muted small">{user?.email}</span>
+          <button
+            className="btn-link"
+            onClick={handleChangePassword}
+            disabled={sendingReset}
+          >
+            {sendingReset ? "Sending..." : "Change password"}
+          </button>
+          {resetMessage && (
+            <span className="muted small">{resetMessage}</span>
+          )}
           <button className="btn-link" onClick={signOut}>
             Sign out
           </button>

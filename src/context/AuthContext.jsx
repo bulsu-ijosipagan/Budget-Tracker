@@ -28,6 +28,12 @@ export function AuthProvider({ children }) {
     signUp: (email, password, options) =>
       supabase.auth.signUp({ email, password, options }),
     signOut: () => supabase.auth.signOut(),
+    sendPasswordReset: (email) =>
+      supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin.replace(/\/$/, "")}/reset-password`,
+      }),
+    updatePassword: (password) =>
+      supabase.auth.updateUser({ password }),
   };
 
   if (loading) return null;
